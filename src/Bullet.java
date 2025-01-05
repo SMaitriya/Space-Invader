@@ -5,7 +5,7 @@ import com.jogamp.opengl.GL2;
 public class Bullet {
     private float x, y;
     private static final float SIZE = 0.02f;
-    private static final float SPEED = 0.05f;
+    private static final float SPEED = 0.02f;
 
     // Constructeur qui initialise la position de la balle
     public Bullet(float x, float y) {

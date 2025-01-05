@@ -29,8 +29,8 @@ public class Game implements KeyListener, GLEventListener {
         invaders = new ArrayList<>();
         bullets = new ArrayList<>();
         movingRight = true;
-        invaderSpeed = 0.01f;
-        invaderDropDistance = 0.1f;
+        invaderSpeed = 0.004f;
+        invaderDropDistance = 0.1f;  // Distance de chute des envahisseurs lorsqu'ils atteignent le bord de l'écran
         gameOver = false;
         gameWon = false;
         initializeInvaders();
