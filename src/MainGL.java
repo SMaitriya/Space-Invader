@@ -1,6 +1,4 @@
-
 import javax.swing.*;
-
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
@@ -8,15 +6,16 @@ import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.*;
 import javax.swing.JFrame;
-import java.awt.*;
-import java.util.Objects;
+import com.jogamp.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.TextureIO;
+import java.io.File;
+import java.io.IOException;
 
 public class MainGL implements GLEventListener {
     private Game game;
     private static GLCanvas canvas;
     private static FPSAnimator animator;
-
-
+    private Texture backgroundTexture;  // Texture pour le fond
 
     public static void main(String[] args) {
         // Création de la fenêtre
@@ -25,7 +24,7 @@ public class MainGL implements GLEventListener {
         MainGL mainGL = new MainGL();
         canvas.addGLEventListener(mainGL); // Ajout du GLEventListener pour l'affichage
         frame.add(canvas);
-        frame.setSize(800, 600);
+        frame.setSize(1200, 900);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
 
@@ -41,16 +40,18 @@ public class MainGL implements GLEventListener {
 
     @Override
     public void init(GLAutoDrawable drawable) {
-        GL2 gl = drawable.getGL().getGL2();
-        gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Définir la couleur de fond (noir)
+
+        // Chargement de la texture du fond
+        try {
+            backgroundTexture = TextureIO.newTexture(new File("src/img/space.jpg"), true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // Initialisation de l'objet Game, qui sera utilisé pour la logique du jeu
         game = new Game();
         canvas.addKeyListener(game); // Ajout du KeyListener après l'initialisation de l'objet game
     }
-
-
-
 
     @Override
     public void dispose(GLAutoDrawable drawable) {
@@ -62,9 +63,29 @@ public class MainGL implements GLEventListener {
         GL2 gl = drawable.getGL().getGL2();
         gl.glClear(GL.GL_COLOR_BUFFER_BIT); // Efface l'écran
 
+        // Dessiner l'image de fond
+        drawBackground(gl);
+
         if (game != null) {
             game.update(); // Met à jour la logique du jeu
             game.draw(gl); // Dessine l'état du jeu
+        }
+    }
+
+    private void drawBackground(GL2 gl) {
+        if (backgroundTexture != null) {
+            backgroundTexture.enable(gl);
+            backgroundTexture.bind(gl);
+
+            // Dessiner un quadrilatère couvrant l'écran avec la texture
+            gl.glBegin(GL2.GL_QUADS);
+            gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex2f(-1.0f, -1.0f);
+            gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex2f(1.0f, -1.0f);
+            gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex2f(1.0f, 1.0f);
+            gl.glTexCoord2f(0.0f, 1.0f); gl.glVertex2f(-1.0f, 1.0f);
+            gl.glEnd();
+
+            backgroundTexture.disable(gl);
         }
     }
 
@@ -120,5 +141,5 @@ public class MainGL implements GLEventListener {
             loseCanvas.setFocusable(true);
             loseCanvas.requestFocus();
         });
-        }
+    }
 }

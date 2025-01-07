@@ -16,7 +16,6 @@ public class Game implements KeyListener, GLEventListener {
     private float invaderDropDistance;
     private boolean gameOver;
     private boolean gameWon;
-
     private int windowWidth;
     private int windowHeight;
 
