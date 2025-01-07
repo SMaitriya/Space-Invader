@@ -1,7 +1,8 @@
 import com.jogamp.opengl.GL2;
 
 public class Bullet {
-    private float x, y;
+    private final float x;
+    private float y;
     private static final float SIZE = 0.02f;
     private static final float SPEED = 0.02f;
 
@@ -42,7 +43,7 @@ public class Bullet {
         // Aileron gauche
         gl.glVertex2f(x - SIZE * 0.2f, y - SIZE * 0.6f);
         gl.glVertex2f(x - SIZE * 0.4f, y - SIZE * 0.8f);
-        gl.glVertex2f(x - SIZE * 0.4f, y - SIZE * 1.0f);
+        gl.glVertex2f(x - SIZE * 0.4f, y - SIZE);
         gl.glVertex2f(x - SIZE * 0.2f, y - SIZE * 0.8f);
         gl.glEnd();
 
@@ -50,7 +51,7 @@ public class Bullet {
         // Aileron droit
         gl.glVertex2f(x + SIZE * 0.2f, y - SIZE * 0.6f);
         gl.glVertex2f(x + SIZE * 0.4f, y - SIZE * 0.8f);
-        gl.glVertex2f(x + SIZE * 0.4f, y - SIZE * 1.0f);
+        gl.glVertex2f(x + SIZE * 0.4f, y - SIZE);
         gl.glVertex2f(x + SIZE * 0.2f, y - SIZE * 0.8f);
         gl.glEnd();
     }
