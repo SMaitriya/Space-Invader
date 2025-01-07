@@ -1,7 +1,5 @@
 import com.jogamp.opengl.GL2;
 
-import com.jogamp.opengl.GL2;
-
 public class Bullet {
     private float x, y;
     private static final float SIZE = 0.02f;
@@ -21,7 +19,7 @@ public class Bullet {
 
     // Dessine la balle à l'écran avec OpenGL
     public void draw(GL2 gl) {
-        gl.glColor3f(1.0f, 1.0f, 0.0f);
+
         gl.glBegin(GL2.GL_QUADS); // Début de la forme carrée pour la balle
         gl.glVertex2f(x - SIZE, y - SIZE);
         gl.glVertex2f(x + SIZE, y - SIZE);

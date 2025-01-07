@@ -1,14 +1,11 @@
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
-import com.jogamp.opengl.util.awt.TextRenderer;
-import com.jogamp.opengl.util.gl2.GLUT;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
-import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.util.awt.TextRenderer;
+
 
 public class Game implements KeyListener, GLEventListener {
     private Player player;
@@ -20,7 +17,6 @@ public class Game implements KeyListener, GLEventListener {
     private boolean gameOver;
     private boolean gameWon;
 
-    // Variables to store window dimensions
     private int windowWidth;
     private int windowHeight;
 
@@ -36,6 +32,8 @@ public class Game implements KeyListener, GLEventListener {
         initializeInvaders();
     }
 
+    // Initialisation des envahisseurs sur plusieurs lignes et colonnes
+
     private void initializeInvaders() {
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 8; col++) {
@@ -47,30 +45,42 @@ public class Game implements KeyListener, GLEventListener {
         }
     }
 
+    // Mise à jour de l'état du jeu à chaque frame
+
     public void update() {
-        if (gameOver || gameWon) return; // Stop the game if it's over or won
         player.update();
         updateBullets();
         updateInvaders();
         checkGameStatus();
     }
 
+    private void win(){
+        MainGL.switchToWinCanvas();
+    }
+
+    private void lose() {
+        MainGL.switchToLoseCanvas();
+    }
+
     private void checkGameStatus() {
-        // Check if all invaders are destroyed (win condition)
         if (invaders.isEmpty()) {
             gameWon = true;
+            win();
+
 
         }
 
-        // Check if any invader has reached the player (game over condition)
         for (Invader invader : invaders) {
-            if (Math.abs(invader.getY() - player.getY()) < 0.01f) {  // Vérifie si les Y sont suffisamment proches (tolérance)
+            if (Math.abs(invader.getY() - player.getY()) < 0.1f) {
                 gameOver = true;
+                lose();
                 break;
             }
         }
     }
 
+
+    // Mise à jour des balles tirées par le joueur
 
     private void updateBullets() {
         Iterator<Bullet> bulletIt = bullets.iterator();
@@ -94,7 +104,6 @@ public class Game implements KeyListener, GLEventListener {
     }
 
     private void updateInvaders() {
-        if (gameOver || gameWon) return; // Do not update invaders if the game is over or won
 
         boolean needsToDropAndReverse = false;
         float dx = movingRight ? invaderSpeed : -invaderSpeed;
@@ -115,14 +124,18 @@ public class Game implements KeyListener, GLEventListener {
         }
     }
 
+    // Vérifie la collision entre une balle et un envahisseur
+
     private boolean checkCollision(Bullet bullet, Invader invader) {
         return Math.abs(bullet.getX() - invader.getX()) < (bullet.getSize() + invader.getSize()) &&
                 Math.abs(bullet.getY() - invader.getY()) < (bullet.getSize() + invader.getSize());
     }
 
+    // Dessine tous les éléments du jeu
+
     public void draw(GL2 gl) {
 
-        player.draw(gl);
+        player.draw(gl); // Dessine le joueur
         for (Bullet bullet : bullets) {
             bullet.draw(gl);
         }
@@ -132,9 +145,11 @@ public class Game implements KeyListener, GLEventListener {
     }
 
 
+    // Gère les événements clavier (touche pressée)
+
     @Override
     public void keyPressed(KeyEvent e) {
-        if (gameOver || gameWon) return; // Don't process input if the game is over or won
+
 
         switch (e.getKeyCode()) {
             case KeyEvent.VK_LEFT:
@@ -163,13 +178,13 @@ public class Game implements KeyListener, GLEventListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-        // Cette méthode est obligatoire, mais elle peut rester vide si vous n'en avez pas besoin
     }
 
     @Override
     public void init(GLAutoDrawable drawable) {
-        // Initialize the OpenGL state if needed
     }
+
+    // Réglage de la fenêtre OpenGL lors d'un redimensionnement
 
     @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
@@ -183,10 +198,12 @@ public class Game implements KeyListener, GLEventListener {
         gl.glOrtho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f); // Set orthographic projection
     }
 
+    // Rendu de la scène OpenGL
+
     @Override
     public void display(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();
-        draw(gl);
+        draw(gl); // Dessine les éléments du jeu
     }
 
     @Override

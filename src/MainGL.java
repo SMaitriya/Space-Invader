@@ -1,61 +1,22 @@
 
-
-import java.awt.Dimension;
-import java.util.ArrayList;
-import javax.swing.JFrame;
+import javax.swing.*;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.awt.GLCanvas;
-import com.jogamp.opengl.glu.GLU;
-import com.jogamp.opengl.util.Animator;
 import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.*;
-import com.jogamp.opengl.awt.GLCanvas;
 import javax.swing.JFrame;
-import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.GLEventListener;
-import com.jogamp.opengl.awt.GLCanvas;
-import com.jogamp.opengl.glu.GLU;
-import com.jogamp.opengl.util.FPSAnimator;
-import java.awt.event.KeyListener;
-import java.awt.event.KeyEvent;
-import javax.swing.JFrame;
-import java.util.ArrayList;
-
-
-import java.awt.Dimension;
-import java.util.ArrayList;
-
-import javax.swing.JFrame;
-
-import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.GLEventListener;
-import com.jogamp.opengl.awt.GLCanvas;
-import com.jogamp.opengl.glu.GLU;
-import com.jogamp.opengl.util.Animator;
-import com.jogamp.opengl.util.FPSAnimator;
-import com.jogamp.opengl.*;
-import com.jogamp.opengl.awt.GLCanvas;
-import javax.swing.JFrame;
-import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.GLEventListener;
-import com.jogamp.opengl.awt.GLCanvas;
-import com.jogamp.opengl.glu.GLU;
-import com.jogamp.opengl.util.FPSAnimator;
-import java.awt.event.KeyListener;
-import java.awt.event.KeyEvent;
-import javax.swing.JFrame;
-import java.util.ArrayList;
-
+import java.awt.*;
+import java.util.Objects;
 
 public class MainGL implements GLEventListener {
     private Game game;
-    private static GLCanvas canvas; // Canvas pour afficher l'OpenGL
+    private static GLCanvas canvas;
+    private static FPSAnimator animator;
+
+
 
     public static void main(String[] args) {
         // Création de la fenêtre
@@ -72,6 +33,7 @@ public class MainGL implements GLEventListener {
         animator.start();
 
         // Ajout du KeyListener pour gérer les événements clavier
+        mainGL.game = new Game();
         canvas.addKeyListener(mainGL.game);
         canvas.setFocusable(true);
         canvas.requestFocus();
@@ -87,8 +49,12 @@ public class MainGL implements GLEventListener {
         canvas.addKeyListener(game); // Ajout du KeyListener après l'initialisation de l'objet game
     }
 
+
+
+
     @Override
     public void dispose(GLAutoDrawable drawable) {
+        // Gérer les ressources au moment de la fermeture
     }
 
     @Override
@@ -105,6 +71,54 @@ public class MainGL implements GLEventListener {
     @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
         GL2 gl = drawable.getGL().getGL2();
-        gl.glViewport(0, 0, width, height); // Ajuste la vue du canvas lorsque la taille de la fenêtre change
+        gl.glViewport(0, 0, width, height); // Ajuste la vue du canvas
     }
+
+    public static void switchToWinCanvas() {
+        SwingUtilities.invokeLater(() -> {
+            if (animator != null && animator.isAnimating()) {
+                animator.stop();
+            }
+
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(canvas);
+            GLCanvas winCanvas = new GLCanvas();
+            WinScreen winScreen = new WinScreen();
+            winCanvas.addGLEventListener(winScreen);
+
+            frame.remove(canvas);
+            frame.add(winCanvas);
+            frame.revalidate();
+            frame.repaint();
+
+            FPSAnimator winAnimator = new FPSAnimator(winCanvas, 60);
+            winAnimator.start();
+
+            winCanvas.setFocusable(true);
+            winCanvas.requestFocus();
+        });
+    }
+
+    public static void switchToLoseCanvas() {
+        SwingUtilities.invokeLater(() -> {
+            if (animator != null && animator.isAnimating()) {
+                animator.stop();
+            }
+
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(canvas);
+            GLCanvas loseCanvas = new GLCanvas();
+            LoseScreen loseScreen = new LoseScreen();
+            loseCanvas.addGLEventListener(loseScreen);
+
+            frame.remove(canvas);
+            frame.add(loseCanvas);
+            frame.revalidate();
+            frame.repaint();
+
+            FPSAnimator loseAnimator = new FPSAnimator(loseCanvas, 60);
+            loseAnimator.start();
+
+            loseCanvas.setFocusable(true);
+            loseCanvas.requestFocus();
+        });
+        }
 }
