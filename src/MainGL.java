@@ -48,14 +48,10 @@ public class MainGL implements GLEventListener {
             e.printStackTrace();
         }
 
-        // Initialisation de l'objet Game, qui sera utilisé pour la logique du jeu
-        game = new Game();
-        canvas.addKeyListener(game); // Ajout du KeyListener après l'initialisation de l'objet game
     }
 
     @Override
     public void dispose(GLAutoDrawable drawable) {
-        // Gérer les ressources au moment de la fermeture
     }
 
     @Override
@@ -105,15 +101,12 @@ public class MainGL implements GLEventListener {
             GLCanvas winCanvas = new GLCanvas();
             WinScreen winScreen = new WinScreen();
             winCanvas.addGLEventListener(winScreen);
-
             frame.remove(canvas);
             frame.add(winCanvas);
             frame.revalidate();
             frame.repaint();
-
             FPSAnimator winAnimator = new FPSAnimator(winCanvas, 60);
             winAnimator.start();
-
             winCanvas.setFocusable(true);
             winCanvas.requestFocus();
         });
@@ -129,15 +122,12 @@ public class MainGL implements GLEventListener {
             GLCanvas loseCanvas = new GLCanvas();
             LoseScreen loseScreen = new LoseScreen();
             loseCanvas.addGLEventListener(loseScreen);
-
             frame.remove(canvas);
             frame.add(loseCanvas);
             frame.revalidate();
             frame.repaint();
-
             FPSAnimator loseAnimator = new FPSAnimator(loseCanvas, 60);
             loseAnimator.start();
-
             loseCanvas.setFocusable(true);
             loseCanvas.requestFocus();
         });

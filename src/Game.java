@@ -14,8 +14,6 @@ public class Game implements KeyListener, GLEventListener {
     private boolean movingRight;
     private float invaderSpeed;
     private float invaderDropDistance;
-    private boolean gameOver;
-    private boolean gameWon;
     private int windowWidth;
     private int windowHeight;
 
@@ -26,8 +24,6 @@ public class Game implements KeyListener, GLEventListener {
         movingRight = true;
         invaderSpeed = 0.004f;
         invaderDropDistance = 0.1f;  // Distance de chute des envahisseurs lorsqu'ils atteignent le bord de l'écran
-        gameOver = false;
-        gameWon = false;
         initializeInvaders();
     }
 
@@ -63,15 +59,11 @@ public class Game implements KeyListener, GLEventListener {
 
     private void checkGameStatus() {
         if (invaders.isEmpty()) {
-            gameWon = true;
             win();
-
-
         }
 
         for (Invader invader : invaders) {
             if (Math.abs(invader.getY() - player.getY()) < 0.1f) {
-                gameOver = true;
                 lose();
                 break;
             }
@@ -197,12 +189,10 @@ public class Game implements KeyListener, GLEventListener {
         gl.glOrtho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f); // Set orthographic projection
     }
 
-    // Rendu de la scène OpenGL
 
     @Override
     public void display(GLAutoDrawable drawable) {
-        GL2 gl = drawable.getGL().getGL2();
-        draw(gl); // Dessine les éléments du jeu
+
     }
 
     @Override
